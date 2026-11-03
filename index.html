@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Munaqasyah Learning — Sistem Belajar Santri TPA (Duolingo Style)</title>
+  <meta name="description" content="Sistem belajar interaktif bergaya Duolingo untuk persiapan ujian munaqasyah santri TPA LPPTKA BKPRMI. Mencakup Fiqh, Tauhid, Tarikh, dan Ilmu Tajwid dengan sinkronisasi multi-device real-time.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📿</text></svg>">
+</head>
+<body>
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="screen-login" class="screen active">
+    <div class="login-container">
+      <div class="login-card">
+        <span class="login-logo">📿</span>
+        <h1 class="login-title">Munaqasyah Learning</h1>
+        <p class="login-subtitle">Sistem Belajar Santri TPA Al-Qur'an (LPPTKA-BKPRMI)</p>
+
+        <!-- Quick 1-Click Login for All 5 Accounts -->
+        <div class="quick-login-section">
+          <div class="quick-login-title">Pilih Akun Cepat (1-Klik Masuk)</div>
+          <div class="quick-login-grid">
+            <div class="quick-login-card" onclick="APP.quickFill('ferdi', 'ferdi1234')">
+              <div class="quick-login-avatar" style="background:#58cc02;">👦</div>
+              <div class="quick-login-info">
+                <div class="quick-login-name">Ferdi</div>
+                <div class="quick-login-sub">Santri · ferdi1234</div>
+              </div>
+            </div>
+            <div class="quick-login-card" onclick="APP.quickFill('kaniah', 'kaniah1234')">
+              <div class="quick-login-avatar" style="background:#ce82ff;">👧</div>
+              <div class="quick-login-info">
+                <div class="quick-login-name">Kaniah</div>
+                <div class="quick-login-sub">Santri · kaniah1234</div>
+              </div>
+            </div>
+            <div class="quick-login-card" onclick="APP.quickFill('fitrah', 'fitrah1234')">
+              <div class="quick-login-avatar" style="background:#38bdf8;">👦</div>
+              <div class="quick-login-info">
+                <div class="quick-login-name">Fitrah</div>
+                <div class="quick-login-sub">Santri · fitrah1234</div>
+              </div>
+            </div>
+            <div class="quick-login-card" onclick="APP.quickFill('ikhsan', 'ikhsan1234')">
+              <div class="quick-login-avatar" style="background:#fbbf24;">👦</div>
+              <div class="quick-login-info">
+                <div class="quick-login-name">Ikhsan</div>
+                <div class="quick-login-sub">Santri · ikhsan1234</div>
+              </div>
+            </div>
+            <div class="quick-login-card admin-card" onclick="APP.quickFill('admin', 'admin1234')">
+              <div class="quick-login-avatar" style="background:#ff6b6b;">👳</div>
+              <div class="quick-login-info">
+                <div class="quick-login-name">Ustadz (Admin)</div>
+                <div class="quick-login-sub">Pembimbing/Monitoring · pass: admin1234</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form id="login-form" onsubmit="return APP.login(event)">
+          <div class="form-group">
+            <label for="login-username">Username</label>
+            <input type="text" id="login-username" placeholder="Masukkan username" autocomplete="username" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Masukkan password" autocomplete="current-password" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-login">🚀 Masuk Belajar</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+
+        <div class="login-device-hint">
+          <span>📱 Buka di HP / Device Masing-masing?</span>
+          <a onclick="APP.showDeviceModal()">Lihat QR Code & IP</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== STUDENT DASHBOARD ==================== -->
+  <div id="screen-dashboard" class="screen">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <span class="header-logo">📿</span>
+        <span class="header-title">Munaqasyah</span>
+        <div id="sync-badge-student" class="sync-badge online" onclick="APP.showDeviceModal()" title="Status Sinkronisasi Server Multi-Device">
+          <span class="sync-dot"></span>
+          <span id="sync-text-student">Tersinkron (SQLite)</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn-icon" onclick="APP.showDeviceModal()" title="Buka di HP Santri">📱 Buka di HP</button>
+        <button class="btn-icon" id="btn-sound-student" onclick="APP.toggleSound()" title="Audio Suara">🔊</button>
+        <div class="header-stat">
+          <span class="icon">⚡</span>
+          <span class="xp-value" id="header-xp">0</span>
+          <span class="stat-text">XP</span>
+        </div>
+        <div class="header-stat">
+          <span class="icon">🔥</span>
+          <span class="streak-value" id="header-streak">0</span>
+          <span class="stat-text">Hari</span>
+        </div>
+        <div class="header-stat">
+          <span class="icon">❤️</span>
+          <span class="hearts-value" id="header-hearts" style="color:#ff6b6b;font-weight:800;">5</span>
+          <span class="stat-text">Nyawa</span>
+        </div>
+        <div class="header-user">
+          <div class="header-avatar" id="header-avatar">F</div>
+          <span class="header-username" id="header-name">User</span>
+        </div>
+        <button class="btn-logout" onclick="APP.logout()">Keluar</button>
+      </div>
+    </header>
+
+    <!-- Ustadz Feedback Banner (if received message) -->
+    <div id="ustadz-feedback-banner" class="ustadz-feedback-banner" style="display:none;"></div>
+
+    <!-- Exam Readiness Indicator Card -->
+    <div id="readiness-card" class="readiness-card"></div>
+
+    <div class="stats-bar" id="stats-bar"></div>
+
+    <div class="level-path-container">
+      <div id="level-path"></div>
+    </div>
+  </div>
+
+  <!-- ==================== LESSON SCREEN ==================== -->
+  <div id="screen-lesson" class="screen">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <button class="btn-back" onclick="APP.showScreen('dashboard')">← Kembali ke Peta</button>
+      </div>
+      <div class="header-right">
+        <button class="btn-icon" id="btn-sound-lesson" onclick="APP.toggleSound()">🔊</button>
+        <div class="header-stat">
+          <span class="icon">⚡</span>
+          <span class="xp-value" id="lesson-xp">0</span>
+          <span class="stat-text">XP</span>
+        </div>
+        <div class="header-stat">
+          <span class="icon">❤️</span>
+          <span class="hearts-value" id="lesson-hearts" style="color:#ff6b6b;font-weight:800;">5</span>
+        </div>
+      </div>
+    </header>
+    <div class="lesson-container">
+      <div class="lesson-header">
+        <div class="lesson-badge" id="lesson-badge"></div>
+        <h2 class="lesson-title" id="lesson-title"></h2>
+        <div class="lesson-topics" id="lesson-topics"></div>
+      </div>
+      <div class="lesson-content" id="lesson-content"></div>
+      <button class="btn-start-quiz" onclick="APP.startQuiz()" id="btn-start-quiz">🎯 Mulai Kuis Munaqasyah</button>
+    </div>
+  </div>
+
+  <!-- ==================== QUIZ SCREEN ==================== -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-container">
+      <div class="quiz-top-bar">
+        <button class="quiz-close" onclick="APP.quitQuiz()" title="Keluar Quiz">✕</button>
+        <div class="quiz-progress">
+          <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+        </div>
+        <div class="quiz-hearts" id="quiz-hearts"></div>
+      </div>
+
+      <div class="quiz-question-area">
+        <div class="quiz-question-number" id="quiz-question-number"></div>
+        <div class="quiz-question-type" id="quiz-question-type"></div>
+        <div class="quiz-question-text" id="quiz-question-text"></div>
+      </div>
+
+      <div id="quiz-answer-area"></div>
+
+      <div class="quiz-feedback" id="quiz-feedback">
+        <div class="quiz-feedback-title" id="quiz-feedback-title"></div>
+        <div class="quiz-feedback-text" id="quiz-feedback-text"></div>
+      </div>
+    </div>
+
+    <div class="quiz-bottom-bar" id="quiz-bottom-bar" style="display:none;">
+      <button class="btn btn-primary" id="quiz-next-btn" onclick="APP.nextQuestion()">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- ==================== RESULTS SCREEN ==================== -->
+  <div id="screen-results" class="screen">
+    <div class="results-container">
+      <div class="results-card" id="results-card">
+        <div class="results-icon" id="results-icon"></div>
+        <h2 class="results-title" id="results-title"></h2>
+        <p class="results-subtitle" id="results-subtitle"></p>
+        <div class="results-stars" id="results-stars"></div>
+        <div class="results-stats" id="results-stats"></div>
+        <div class="results-actions" id="results-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== USTADZ DASHBOARD ==================== -->
+  <div id="screen-ustadz" class="screen">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <span class="header-logo">📿</span>
+        <span class="header-title">Panel Ustadz</span>
+        <div id="sync-badge-ustadz" class="sync-badge online" onclick="APP.showDeviceModal()" title="Status Sinkronisasi Real-Time SSE">
+          <span class="sync-dot"></span>
+          <span id="sync-text-ustadz">Real-Time SSE Aktif</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="btn-icon" onclick="APP.showDeviceModal()">📱 QR & Link Device Santri</button>
+        <button class="btn-icon" onclick="APP.showSummaryReportModal()">🖨️ Cetak Raport Semua</button>
+        <button class="btn-icon" id="btn-sound-ustadz" onclick="APP.toggleSound()">🔊</button>
+        <div class="header-user">
+          <div class="header-avatar" style="background: linear-gradient(135deg, #ce82ff, #ff6b6b);">👳</div>
+          <span class="header-username">Ustadz Admin</span>
+        </div>
+        <button class="btn-logout" onclick="APP.logout()">Keluar</button>
+      </div>
+    </header>
+
+    <div class="ustadz-container">
+      <h1 class="ustadz-page-title">📊 Dashboard Monitoring Santri TPA</h1>
+      <p class="ustadz-page-subtitle">Pantau perkembangan, kesiapan munaqasyah 4 hari, & berikan bimbingan langsung</p>
+
+      <!-- Live Activity Stream (Updates automatically when santri do quiz on any device!) -->
+      <div class="ustadz-activity-box" id="ustadz-activity-box">
+        <div class="activity-box-title">
+          <span>⚡ Aktivitas Santri Terbaru (Live Sync)</span>
+          <span style="font-size:12px;color:#4ade80;">● Auto-Sync via SSE</span>
+        </div>
+        <div class="activity-feed-list" id="activity-feed-list">
+          <div style="color:var(--text-muted);font-size:12px;">Menunggu aktivitas santri...</div>
+        </div>
+      </div>
+
+      <div class="ustadz-summary" id="ustadz-summary"></div>
+
+      <div id="student-detail-container"></div>
+
+      <div class="ustadz-students-grid" id="ustadz-students-grid"></div>
+
+      <div class="leaderboard" id="leaderboard"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Device Connection Modal (QR Code & Multi-device IP) -->
+  <div id="modal-device" class="modal-overlay" style="display:none;" onclick="if(event.target===this)APP.closeModal('modal-device')">
+    <div class="modal-card">
+      <button class="modal-close" onclick="APP.closeModal('modal-device')">✕</button>
+      <h3 class="modal-title">📱 Buka di HP / Device Santri</h3>
+      <p class="modal-subtitle">Sambungkan HP santri & ustadz pada WiFi yang sama agar progress tersinkron otomatis!</p>
+
+      <div class="qr-container" id="qr-code-box"></div>
+
+      <div class="url-copy-box">
+        <span class="url-text" id="network-url-text">http://localhost:3000</span>
+        <button class="btn-copy" onclick="APP.copyNetworkUrl()">Salin</button>
+      </div>
+
+      <div style="text-align:left;background:rgba(255,255,255,0.04);padding:14px;border-radius:var(--radius-md);font-size:12px;line-height:1.6;color:var(--text-secondary);">
+        <strong style="color:#fff;">💡 Cara Menggunakan:</strong><br>
+        1. Pastikan laptop/PC server dan HP santri terhubung ke <strong>WiFi yang sama</strong>.<br>
+        2. Buka kamera HP santri dan scan QR Code di atas, atau buka URL di browser Chrome/Safari.<br>
+        3. Login menggunakan akun masing-masing (Ferdi, Kaniah, Fitrah, Ikhsan).<br>
+        4. Setiap jawaban, XP, dan nyawa otomatis tersinkron ke SQLite database secara real-time!
+      </div>
+    </div>
+  </div>
+
+  <!-- Ustadz Message Modal -->
+  <div id="modal-message" class="modal-overlay" style="display:none;" onclick="if(event.target===this)APP.closeModal('modal-message')">
+    <div class="modal-card">
+      <button class="modal-close" onclick="APP.closeModal('modal-message')">✕</button>
+      <h3 class="modal-title">💌 Kirim Pesan / Motivasi</h3>
+      <p class="modal-subtitle" id="message-modal-sub">Kirim bimbingan untuk santri</p>
+
+      <div class="form-group">
+        <label for="ustadz-msg-input">Catatan / Pesan Ustadz</label>
+        <textarea id="ustadz-msg-input" style="width:100%;height:100px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-md);color:#fff;padding:12px;font-family:inherit;font-size:14px;" placeholder="Contoh: MasyaAllah nilaimu bagus! Pelajari kembali materi hukum Mad di Hari 4 ya."></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="APP.closeModal('modal-message')">Batal</button>
+        <button class="btn btn-primary" style="width:auto;margin:0;" onclick="APP.submitUstadzMessage()">Kirim Pesan 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate Modal -->
+  <div id="modal-certificate" class="modal-overlay" style="display:none;" onclick="if(event.target===this)APP.closeModal('modal-certificate')">
+    <div class="modal-card" style="max-width:760px;background:#fdfbf7;padding:24px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;" class="no-print">
+        <button class="btn btn-secondary" style="color:#000;" onclick="APP.closeModal('modal-certificate')">← Tutup</button>
+        <button class="btn-certificate" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+      </div>
+
+      <div class="certificate-container printable-area" id="certificate-content">
+        <!-- Rendered by APP.renderCertificate() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Report Modal -->
+  <div id="modal-summary-report" class="modal-overlay" style="display:none;" onclick="if(event.target===this)APP.closeModal('modal-summary-report')">
+    <div class="modal-card" style="max-width:820px;background:#fff;color:#000;padding:28px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px;" class="no-print">
+        <button class="btn btn-secondary" style="color:#000;" onclick="APP.closeModal('modal-summary-report')">← Tutup</button>
+        <button class="btn-certificate" onclick="window.print()">🖨️ Cetak Raport Munaqasyah</button>
+      </div>
+
+      <div class="printable-area" id="summary-report-content" style="font-family:'Inter', sans-serif;">
+        <!-- Rendered by APP.renderSummaryReport() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONFETTI CONTAINER ==================== -->
+  <div class="confetti-container" id="confetti-container"></div>
+
+  <script src="qrcode.js"></script>
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "munaqasyah-learning-system",
+  "version": "1.0.0",
+  "description": "Sistem Belajar Duolingo Persiapan Munaqasyah Santri TPA (LPPTKA-BKPRMI) dengan Sinkronisasi Multi-Device SQLite",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["munaqasyah", "tpa", "duolingo", "islamic-education", "bkprmi"],
+  "author": "Antigravity Pair Programmer",
+  "license": "MIT"
+}

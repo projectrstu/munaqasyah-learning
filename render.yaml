@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: munaqasyah-tpa
+    env: node
+    plan: free
+    buildCommand: echo "Ready to run"
+    startCommand: node server.js
+    disk:
+      name: munaqasyah-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: 3000
